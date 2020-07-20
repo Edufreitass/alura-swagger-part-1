@@ -19,16 +19,24 @@ info:
   # license:
   #   name: MIT
   #   url: http://opensource.org/licenses/MIT
+  
+securityDefinitions:
+  BasicAuth:
+    type: basic
+    
+security:
+  - BasicAuth: []
+  
+consumes:
+  - application/json
+produces:
+  - application/json
 
 paths:
   '/cliente':
     post:
       summary: Cadastra Cliente
       description: Cadastra um novo cliente
-      consumes:
-        - application/json
-      produces:
-        - application/json
       operationId: cadastraCliente
       parameters: 
         - in: body
@@ -44,6 +52,48 @@ paths:
           description: Requisição inválida
         500:
           description: Erro interno no servidor
+          
+  '/conta/{agencia}/{numero}/{digito}/saldo':
+    get:
+      summary: Consulta Saldo
+      description: Consulta o saldo da conta do cliente
+      operationId: consultaSaldo
+      security:
+        - BasicAuth: []
+      parameters:
+        - in: path
+          name: agencia
+          type: integer
+          format: int32
+          required: true
+        - in: path
+          name: numero
+          type: integer
+          format: int64
+          required: true
+        - in: path
+          name: digito
+          type: integer
+          format: int32
+          required: true
+        - in: header
+          name: Authorization
+          type: string
+          required: true
+      responses:
+        200:
+          description: Consulta a saldo efetuada com sucesso
+          schema:
+            type: number
+            format: double
+        400:
+          description: Requisição inválida
+        401:
+          description: Requisição não autorizada
+        500:
+          description: Erro no servidor
+        
+          
 definitions:
   
   Cliente:
@@ -70,22 +120,24 @@ definitions:
         items:
           $ref: '#/definitions/Conta'
           
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
+  Conta:
+    type: object
+    properties:
+      agencia:
+        type: integer
+        format: int32
+        example: 0913
+      numero:
+        type: integer
+        format: int64
+        example: 534822069
+      digito:
+        type: integer
+        format: int32
+        example: 7
+      saldo:
+        type: number
+        format: double
+        example: 101.34
+      cliente:
+        $ref: '#/definitions/Cliente'
