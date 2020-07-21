@@ -32,9 +32,17 @@ consumes:
 produces:
   - application/json
 
+tags:
+  - name: Cliente
+  - name: Conta
+  - name: Extrato
+  - name: Transacao
+
 paths:
   '/cliente':
     post:
+      tags:
+        - Cliente
       summary: Cadastra Cliente
       description: Cadastra um novo cliente
       operationId: cadastraCliente
@@ -55,6 +63,8 @@ paths:
           
   '/conta/{agencia}/{numero}/{digito}/saldo':
     get:
+      tags:
+        - Conta
       summary: Consulta Saldo
       description: Consulta o saldo da conta do cliente
       operationId: consultaSaldo
@@ -95,6 +105,8 @@ paths:
         
   '/transacao':
     post:
+      tags:
+        - Transacao
       summary: Cadastra Transação na Conta
       description: Cadastra uma transação de débito ou depósito na conta.
       security:
@@ -131,6 +143,8 @@ paths:
   
   '/extrato/{agencia}/{numero}/{digito}':
     get:
+      tags:
+        - Extrato
       summary: Consulta Extrato
       description: Consulta o extrato da conta do cliente.
       operationId: consultaExtrato
@@ -168,7 +182,68 @@ paths:
         500:
           description: Erro no servidor
     
-          
+  '/transacao/{codigo}':
+    put:
+      tags:
+        - Transacao
+      summary: Altera o valor da Transação
+      description: Altera o valor da transação existente na conta do cliente.
+      security:
+        - BasicAuth: []
+      operationId: alteraValorTransacao
+      parameters:
+        - in: path
+          name: codigo
+          type: integer
+          format: int64
+          required: true
+        - in: query
+          name: valor
+          type: number
+          format: double
+          required: true
+        - in: header
+          name: Authorization
+          type: string
+          required: true
+      responses:
+        204:
+          description: Alteração do valor efetuada com sucesso
+        400:
+          description: Requisição inválida
+        401:
+          description: Requisição não autorizada
+        500:
+          description: Erro no servidor  
+  
+    delete:
+      tags:
+        - Transacao
+      summary: Exclui a Transação
+      description: Exclusão da transação existente na conta do cliente.
+      operationId: excluiTransacao
+      security:
+        - BasicAuth: []
+      parameters:
+        - in: path
+          name: codigo
+          type: integer
+          format: int64
+          required: true
+        - in: header
+          name: Authorization
+          type: string
+          required: true
+      responses:
+        204:
+          description: Transação excluida com sucesso
+        400:
+          description: Requisição inválida
+        401:
+          description: Requisição não autorizada
+        500:
+          description: Erro no servidor 
+    
 definitions:
   
   Cliente:
