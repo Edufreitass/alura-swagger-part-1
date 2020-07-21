@@ -93,6 +93,81 @@ paths:
         500:
           description: Erro no servidor
         
+  '/transacao':
+    post:
+      summary: Cadastra Transação na Conta
+      description: Cadastra uma transação de débito ou depósito na conta.
+      security:
+        - BasicAuth: []
+      operationId: cadastraTransacao
+      parameters:
+        - in: header
+          type: string
+          name: Authorization
+          required: true
+        - in: body
+          name: transacao
+          schema:
+            $ref: '#/definitions/Transacao'
+          required: true
+        - in: query
+          name: tipo
+          type: string
+          enum: 
+            - debito
+            - deposito
+          required: true
+      responses:
+        201:
+          description: Cadastro de transação efetuado com sucesso.
+          schema:
+            $ref: '#/definitions/Transacao'
+        400:
+          description: Requisição inválida
+        401:
+          description: Requisição não autorizada
+        500:
+          description: Erro no servidor
+  
+  '/extrato/{agencia}/{numero}/{digito}':
+    get:
+      summary: Consulta Extrato
+      description: Consulta o extrato da conta do cliente.
+      operationId: consultaExtrato
+      security:
+        - BasicAuth: []
+      parameters:
+        - in: path
+          name: agencia
+          type: integer
+          format: int32
+          required: true
+        - in: path
+          name: numero
+          type: integer
+          format: int64
+          required: true
+        - in: path
+          name: digito
+          type: integer
+          format: int32
+          required: true
+        - in: header
+          name: Authorization
+          type: string
+          required: true
+      responses:
+        200:
+          description: Consulta de extrato efetuada com sucesso
+          schema:
+            $ref: '#/definitions/Extrato'
+        400:
+          description: Requisição inválida
+        401:
+          description: Requisição não autorizada
+        500:
+          description: Erro no servidor
+    
           
 definitions:
   
@@ -141,3 +216,35 @@ definitions:
         example: 101.34
       cliente:
         $ref: '#/definitions/Cliente'
+      transacoes:
+        type: array
+        items:
+          $ref: '#/definitions/Transacao'
+          
+  Transacao:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      tipo:
+        type: string
+        enum:
+          - debito
+          - deposito
+      valor:
+        type: number
+        format: double
+      data:
+        type: string
+        format: date-time
+      conta:
+        $ref: '#/definitions/Conta'
+        
+  Extrato:
+    type: object
+    properties:
+      transacoes:
+        type: array
+        items:
+          $ref: '#/definitions/Transacao'
