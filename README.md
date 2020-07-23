@@ -1,7 +1,7 @@
-# Swagger part 1: Create REST APIs documentation
+# Swagger parte 1: Crie uma documentação APIs REST
 
-- Create Swagger scripts
-- Configure security settings in the Swagger script
-- Generate REST APIs from Swagger's Generate Server
-- Import APIs into Eclipse and understand the basic structure
-- Interpret Swagger Interactive Documentation
+-  Crie scripts Swagger
+-  Configure definições de segurança no script Swagger
+-  Gere APIs REST a partir do Generate Server do Swagger
+-  Importe APIs para o Eclipse e entender a estrutura básica
+-  Interprete a Documentação Interativa do Swagger
